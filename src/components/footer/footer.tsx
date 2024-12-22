@@ -48,7 +48,7 @@ const Footer = () => {
                 className="h-10 w-10"
               />
               <h2 className={`${greatVibes.className} text-2xl`}>
-                Eleva8 Access
+                Elevate Access
               </h2>
             </div>
             <p className="text-gray-400 mb-4">
@@ -125,7 +125,7 @@ const Footer = () => {
         <div className="pt-8 border-t border-zinc-800">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} Eleva8 Access. All rights reserved.
+              © {new Date().getFullYear()} Elevate Access. All rights reserved.
             </p>
             <div className="flex gap-6">
               <Link
