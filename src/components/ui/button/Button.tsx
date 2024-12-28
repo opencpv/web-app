@@ -1,17 +1,17 @@
 interface ButtonProps {
   text: string;
-  color: "primary" | "secondary" | "tertiary" | "white";
-  width: "sm" | "md" | "lg" | "full";
-  height: "sm" | "md" | "lg" | "full";
-  variant: "outline" | "solid" | "ghost";
-  onClick: () => void;
+  color?: "primary" | "secondary" | "tertiary" | "white";
+  width?: "sm" | "md" | "lg" | "full";
+  height?: "sm" | "md" | "lg" | "full";
+  variant?: "outline" | "solid" | "ghost";
+  onClick?: () => void;
 }
 export default function ButtonComponent({
   text,
-  color,
-  width,
-  height,
-  variant,
+  color = "primary",
+  width = "md",
+  height = "md",
+  variant = "solid",
   onClick,
 }: ButtonProps) {
   const sizeClass =
@@ -43,14 +43,18 @@ export default function ButtonComponent({
     variant === "outline"
       ? `border-2 border-${colorClass}-400 text-${
           colorClass === "white" ? "white" : `${colorClass}-400`
-        } bg-transparent`
+        } bg-transparent hover:bg-${colorClass}-400 hover:text-${
+          color === "primary" || color === "white" ? "black" : "white"
+        }`
       : variant === "solid"
       ? `bg-${colorClass}-400 text-${
           color === "primary" ? "black" : color === "white" ? "black" : "white"
-        }`
+        } hover:bg-${colorClass}-500`
       : `text-${
           colorClass === "white" ? "white" : `${colorClass}-400`
-        } bg-transparent hover:bg-${colorClass}-50`;
+        } bg-transparent hover:bg-${colorClass}-50 hover:text-${
+          colorClass === "white" ? "gray-200" : `${colorClass}-600`
+        }`;
 
   return (
     <button

@@ -1,6 +1,10 @@
 "use client";
 import { useState } from "react";
 import { greatVibes, lora } from "../fonts/font";
+import CategoryPageHero from "@/components/category-listing/category-page-hero";
+import ViewToggle from "@/components/category-listing/view-toggle";
+import { SectionHeading } from "@/components/ui/title-text/section-heading";
+import NewsletterSection from "@/components/home/newsletter-section";
 
 interface Hackathon {
   id: string;
@@ -39,81 +43,17 @@ export default function HackathonsPage() {
   return (
     <main className="min-h-screen bg-zinc-100">
       {/* Hero Section */}
-      <section className="bg-zinc-900 text-white py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className={`${greatVibes.className} text-5xl mb-6`}>
-              Hackathons
-            </h1>
-            <p className={`${lora.className} text-xl mb-8`}>
-              Showcase your skills, build amazing projects, and win prizes
-            </p>
-          </div>
-        </div>
-      </section>
+      <CategoryPageHero
+        title="Hackathons"
+        description="Showcase your skills, build amazing projects, and win prizes"
+      />
 
       {/* Filters Section */}
       <section className="py-16 container mx-auto px-4">
         <div className="flex justify-between items-center mb-12 flex-wrap">
-          <h2 className={`${greatVibes.className} text-4xl`}>
-            Find Hackathons
-          </h2>
+          <SectionHeading text="Find Hackathons" />
 
-          {/* View Toggle */}
-          <div className="bg-white rounded-lg shadow-md p-1 border-2 border-transparent">
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`px-4 py-2 rounded-md transition-all duration-300 ${
-                viewMode === "grid"
-                  ? "bg-yellow-400 text-black"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              <span className="flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                  />
-                </svg>
-                Grid
-              </span>
-            </button>
-            <button
-              onClick={() => setViewMode("list")}
-              className={`px-4 py-2 rounded-md transition-all duration-300 ${
-                viewMode === "list"
-                  ? "bg-yellow-400 text-black"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              <span className="flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-                List
-              </span>
-            </button>
-          </div>
+          <ViewToggle viewMode={viewMode} setViewMode={setViewMode} />
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-8 mb-12 border-2 border-transparent hover:border-yellow-400 transition-all duration-300">
@@ -372,27 +312,7 @@ export default function HackathonsPage() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-16 container mx-auto px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className={`${greatVibes.className} text-4xl mb-6`}>
-            Stay Updated
-          </h2>
-          <p className="text-gray-600 mb-8">
-            Subscribe to our newsletter to receive the latest hackathons
-            directly in your inbox
-          </p>
-          <div className="flex gap-4 justify-center">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="px-4 py-3 rounded-md border border-gray-300 w-full max-w-md"
-            />
-            <button className="bg-yellow-400 text-black px-6 py-3 rounded-md hover:bg-yellow-500 transition duration-300">
-              Subscribe
-            </button>
-          </div>
-        </div>
-      </section>
+      <NewsletterSection />
     </main>
   );
 }
