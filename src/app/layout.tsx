@@ -7,7 +7,7 @@ import Footer from "@/components/footer/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Eleva8 Access - Discover Opportunities Worldwide",
+  title: "Elevate Access - Discover Opportunities Worldwide",
   description:
     "Find and access opportunities including hackathons, grants, scholarships, fellowships, and more.",
 };
