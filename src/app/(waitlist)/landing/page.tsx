@@ -6,6 +6,7 @@ import { Spacer } from "@/components/ui/spacer";
 import categories from "@/data/categories";
 import CategoryCard from "@/components/cards/category-card";
 import mixpanel from "@/lib/mixpanel";
+import { trackEvent } from "@/lib/analytics";
 
 export default function WaitlistLanding() {
   const [timeLeft, setTimeLeft] = useState({
@@ -19,6 +20,7 @@ export default function WaitlistLanding() {
     mixpanel.track("Page Viewed", {
       page: "Waitlist Landing",
     });
+    trackEvent("Waitlist Landing Viewed");
   }, []);
 
   useEffect(() => {
