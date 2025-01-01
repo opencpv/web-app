@@ -9,7 +9,7 @@ import mixpanel from "@/lib/mixpanel";
 
 export default function WaitlistLanding() {
   const [timeLeft, setTimeLeft] = useState({
-    days: 15,
+    days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0,
@@ -22,8 +22,7 @@ export default function WaitlistLanding() {
   }, []);
 
   useEffect(() => {
-    const targetDate = new Date();
-    targetDate.setDate(targetDate.getDate() + 15);
+    const targetDate = new Date("2025-01-15T00:00:00");
 
     const timer = setInterval(() => {
       const now = new Date();
@@ -38,6 +37,7 @@ export default function WaitlistLanding() {
 
       if (difference < 0) {
         clearInterval(timer);
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       }
     }, 1000);
 
