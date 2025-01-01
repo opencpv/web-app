@@ -3,10 +3,12 @@ import useAssets from "@/customHooks/useAssets";
 import React, { useState } from "react";
 import { greatVibes } from "@/app/fonts/font";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { svgs } = useAssets();
+  const pathname = usePathname();
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
   };
@@ -16,6 +18,10 @@ const Navbar: React.FC = () => {
     { name: "Scholarships", href: "/scholarships" },
     { name: "Fellowships", href: "/fellowships" },
   ];
+  const isWaitlistPage = pathname.startsWith("/landing");
+  if (isWaitlistPage) {
+    return null;
+  }
   return (
     <nav className="sticky top-0 z-50 w-full bg-zinc-900 shadow-dark-mild dark:bg-neutral-700">
       <div className="container mx-auto px-4 py-2 lg:py-4">

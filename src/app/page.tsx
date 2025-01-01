@@ -13,7 +13,6 @@ export default function Home() {
       <HeroSection />
       {/* Categories Section */}
       <CategorySection />
-
       {/* Featured Opportunities */}
       <FeaturedSection />
 

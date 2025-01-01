@@ -13,3 +13,28 @@ export interface Hackathon {
   teamSize: string;
   duration: string;
 }
+
+export interface Hackathon {
+  id: string;
+  title: string;
+  description: string;
+  prizePool: string;
+  deadline: string;
+  organizer: string;
+  mode: "In-Person" | "Virtual" | "Hybrid";
+  location?: string;
+  category: string;
+  requirements: string[];
+  image: string;
+  teamSize: string;
+  duration: string;
+}
+
+export interface AdPlacement {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  link: string;
+  sponsor: string;
+}

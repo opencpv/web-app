@@ -5,31 +5,8 @@ import CategoryPageHero from "@/components/category-listing/category-page-hero";
 import ViewToggle from "@/components/category-listing/view-toggle";
 import { SectionHeading } from "@/components/ui/title-text/section-heading";
 import NewsletterSection from "@/components/home/newsletter-section";
-
-interface Hackathon {
-  id: string;
-  title: string;
-  description: string;
-  prizePool: string;
-  deadline: string;
-  organizer: string;
-  mode: "In-Person" | "Virtual" | "Hybrid";
-  location?: string;
-  category: string;
-  requirements: string[];
-  image: string;
-  teamSize: string;
-  duration: string;
-}
-
-interface AdPlacement {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  sponsor: string;
-}
+import { Hackathon, AdPlacement } from "../../lib/types";
+import AdBannerCard from "@/components/cards/ad-banner-card";
 
 export default function HackathonsPage() {
   const [filters, setFilters] = useState({
@@ -132,6 +109,7 @@ export default function HackathonsPage() {
         </div>
 
         {/* Featured Ad Banner */}
+        <AdBannerCard ad={featuredAd} />
         <div className="mb-8">
           <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg overflow-hidden">
             <div className="flex flex-col md:flex-row items-center">
