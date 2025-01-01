@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/ui/title-text/section-heading";
 import { Spacer } from "@/components/ui/spacer";
 import categories from "@/data/categories";
 import CategoryCard from "@/components/cards/category-card";
+import mixpanel from "@/lib/mixpanel";
 
 export default function WaitlistLanding() {
   const [timeLeft, setTimeLeft] = useState({
@@ -14,6 +15,7 @@ export default function WaitlistLanding() {
     minutes: 0,
     seconds: 0,
   });
+
   useEffect(() => {
     const targetDate = new Date();
     targetDate.setDate(targetDate.getDate() + 15);
@@ -35,6 +37,29 @@ export default function WaitlistLanding() {
     }, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    // Add stylesheet
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.type = "text/css";
+    link.href =
+      "https://prod-waitlist-widget.s3.us-east-2.amazonaws.com/getwaitlist.min.css";
+    document.head.appendChild(link);
+
+    // Add script
+    const script = document.createElement("script");
+    script.src =
+      "https://prod-waitlist-widget.s3.us-east-2.amazonaws.com/getwaitlist.min.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Cleanup
+    return () => {
+      document.head.removeChild(link);
+      document.body.removeChild(script);
+    };
   }, []);
 
   return (
@@ -68,16 +93,11 @@ export default function WaitlistLanding() {
 
           {/* Early Access Form */}
           <div className="max-w-md mx-auto">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-grow px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              />
-              <button className="bg-yellow-400 text-black px-8 py-3 rounded-md hover:bg-yellow-500 transition duration-300 whitespace-nowrap">
-                Get Early Access
-              </button>
-            </div>
+            <div
+              id="getWaitlistContainer"
+              data-waitlist_id="23543"
+              data-widget_type="WIDGET_3"
+            />
           </div>
         </div>
       </section>
