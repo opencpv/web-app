@@ -10,6 +10,9 @@ export const trackEvent = (eventName: string, properties = {}) => {
 // Add type definition for dataLayer
 declare global {
   interface Window {
-    dataLayer: any[];
+    dataLayer: Array<{
+      event: string;
+      [key: string]: unknown;
+    }>;
   }
 }
