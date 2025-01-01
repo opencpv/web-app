@@ -1,6 +1,6 @@
 "use client";
 import HeroSection from "@/components/home/hero-section";
-import { greatVibes, lora } from "./fonts/font";
+import { greatVibes } from "./fonts/font";
 import CategorySection from "@/components/home/category-section";
 import FeaturedSection from "@/components/home/featured-section";
 import AiCta from "@/components/home/ai-cta";

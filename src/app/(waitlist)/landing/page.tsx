@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { greatVibes } from "@/app/fonts/font";
-import NewsletterSection from "@/components/home/newsletter-section";
 import { SectionHeading } from "@/components/ui/title-text/section-heading";
 import { Spacer } from "@/components/ui/spacer";
 import categories from "@/data/categories";
@@ -15,6 +14,12 @@ export default function WaitlistLanding() {
     minutes: 0,
     seconds: 0,
   });
+
+  useEffect(() => {
+    mixpanel.track("Page Viewed", {
+      page: "Waitlist Landing",
+    });
+  }, []);
 
   useEffect(() => {
     const targetDate = new Date();
@@ -71,9 +76,9 @@ export default function WaitlistLanding() {
             Coming Soon
           </h1>
           <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
-            We're working hard to bring you the ultimate experience in finding
-            opportunities. Join our waitlist to be the first to know when we
-            launch!
+            We&apos;re working hard to bring you the ultimate experience in
+            finding opportunities. Join our waitlist to be the first to know
+            when we launch!
           </p>
 
           {/* Countdown Timer */}

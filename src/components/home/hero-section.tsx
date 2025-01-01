@@ -1,6 +1,5 @@
 "use client";
 import { greatVibes, lora } from "@/app/fonts/font";
-import ButtonComponent from "../ui/button/Button";
 
 export default function HeroSection() {
   return (

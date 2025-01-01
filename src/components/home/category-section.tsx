@@ -1,6 +1,4 @@
 "use client";
-import { greatVibes } from "@/app/fonts/font";
-import Link from "next/link";
 import categories from "@/data/categories";
 import CategoryCard from "../cards/category-card";
 import { SectionHeading } from "../ui/title-text/section-heading";

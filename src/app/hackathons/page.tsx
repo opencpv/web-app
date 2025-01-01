@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { greatVibes, lora } from "../fonts/font";
 import CategoryPageHero from "@/components/category-listing/category-page-hero";
 import ViewToggle from "@/components/category-listing/view-toggle";
 import { SectionHeading } from "@/components/ui/title-text/section-heading";

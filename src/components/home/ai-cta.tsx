@@ -1,5 +1,4 @@
 "use client";
-import { greatVibes } from "@/app/fonts/font";
 import { SectionHeading } from "../ui/title-text/section-heading";
 import { Spacer } from "../ui/spacer";
 const AiCta = () => {

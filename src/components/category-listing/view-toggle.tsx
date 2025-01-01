@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 interface ViewToggleProps {
   viewMode: "grid" | "list";
   setViewMode: (viewMode: "grid" | "list") => void;
