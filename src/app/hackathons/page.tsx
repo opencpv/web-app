@@ -108,7 +108,7 @@ export default function HackathonsPage() {
         </div>
 
         {/* Featured Ad Banner */}
-        <AdBannerCard ad={featuredAd} />
+        <AdBannerCard featuredAd={featuredAd} />
         <div className="mb-8">
           <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg overflow-hidden">
             <div className="flex flex-col md:flex-row items-center">
