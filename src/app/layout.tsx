@@ -7,7 +7,7 @@ import {
   GoogleTagManager,
   GoogleTagManagerNoScript,
 } from "@/components/analytics/gtm";
-
+import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -16,13 +16,14 @@ export const metadata: Metadata = {
     "Find and access opportunities including hackathons, grants, scholarships, fellowships, and more.",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+       <html lang="en">
       <head>
         <GoogleTagManager />
       </head>
@@ -33,7 +34,10 @@ export default function RootLayout({
           <main className="flex-grow">{children}</main>
           <Footer />
         </div>
+        <Toaster position="top-right" />
       </body>
     </html>
+
+   
   );
 }

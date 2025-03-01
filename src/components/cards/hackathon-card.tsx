@@ -1,11 +1,29 @@
-import { Hackathon } from "@/lib/types";
+import { HackathonDetailed } from "@/lib/types";
 import ButtonComponent from "../ui/button/Button";
+import { useRouter } from "next/navigation";
 
 interface HackathonCardProps {
-  hackathon: Hackathon;
+  hackathon: HackathonDetailed;
   viewMode: "grid" | "list";
 }
 const HackathonCard = ({ hackathon, viewMode }: HackathonCardProps) => {
+  const router = useRouter();
+
+  const calculateTimeRemaining = () => {
+    const deadline = new Date(hackathon.deadline);
+    const now = new Date();
+    const diffTime = deadline.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) return "Ended";
+    if (diffDays === 0) return "Last day";
+    if (diffDays < 30) return `${diffDays} days left`;
+
+    const months = Math.floor(diffDays / 30);
+    const remainingDays = diffDays % 30;
+    return `${months}m ${remainingDays}d left`;
+  };
+
   return (
     <div
       key={hackathon.id}
@@ -19,18 +37,21 @@ const HackathonCard = ({ hackathon, viewMode }: HackathonCardProps) => {
         } bg-gray-300 relative`}
       >
         <img
-          src={hackathon.image}
+          src={hackathon.image_url}
           alt={hackathon.title}
           className="w-full h-full object-cover"
         />
         <div className="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-semibold">
-          {hackathon.prizePool}
+          {hackathon.prize_pool}
+        </div>
+        <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+          {calculateTimeRemaining()}
         </div>
       </div>
 
       <div className="p-6 flex flex-col h-full flex-grow">
         <h2 className="text-xl font-bold mb-3">{hackathon.title}</h2>
-        <p className="text-gray-300 mb-4 flex-grow">{hackathon.description}</p>
+        <p className="text-gray-300 mb-4 flex-grow">{hackathon.summary}</p>
 
         <div className="space-y-3">
           <div className="flex items-center gap-2">
@@ -43,7 +64,7 @@ const HackathonCard = ({ hackathon, viewMode }: HackathonCardProps) => {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-yellow-400">👥</span>
-            <span className="text-gray-300">{hackathon.teamSize}</span>
+            <span className="text-gray-300">{hackathon.team_size} members</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-yellow-400">⌛</span>
@@ -57,7 +78,11 @@ const HackathonCard = ({ hackathon, viewMode }: HackathonCardProps) => {
           </div>
           <ButtonComponent
             text="View Details"
-            onClick={() => {}}
+            onClick={() => {
+              router.push(
+                `/hackathons/${hackathon.id}?title=${hackathon.title}`
+              );
+            }}
             variant="solid"
           />
         </div>

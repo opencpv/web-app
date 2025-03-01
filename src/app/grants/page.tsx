@@ -1,6 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { greatVibes, lora } from "../fonts/font";
+import { createClient } from "@/lib/supabase/client";
+import { PostgrestError } from "@supabase/supabase-js";
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+
+const supabase = createClient();
 
 interface Grant {
   id: string;
@@ -9,34 +15,141 @@ interface Grant {
   amount: string;
   deadline: string;
   organization: string;
-  eligibleCountries: string[];
-  category: string;
+  eligible_countries: string[];
+  category: number;
   requirements: string[];
-  image: string;
+  image_url: string | null;
+  application_process: string[];
+  contact_info: {
+    email: string;
+    website: string;
+  };
+  timeline: Array<{
+    date: string;
+    event: string;
+  }>;
+  is_active: boolean;
 }
 
-interface AdPlacement {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  sponsor: string;
+interface Category {
+  id: number;
+  name: string;
+}
+
+interface Filters {
+  country: string;
+  category: number | null;
+  minAmount: string;
+  maxAmount: string;
 }
 
 export default function GrantsPage() {
-  const [filters, setFilters] = useState({
+  const [grants, setGrants] = useState<Grant[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<PostgrestError | null>(null);
+  const router = useRouter();
+  
+  const [filters, setFilters] = useState<Filters>({
     country: "",
-    category: "",
+    category: null,
     minAmount: "",
     maxAmount: "",
   });
-  const [sortBy, setSortBy] = useState("deadline");
+  
+  const [sortBy, setSortBy] = useState<"deadline" | "amount">("deadline");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  useEffect(() => {
+    fetchCategories();
+    fetchGrants();
+  }, []);
+
+  useEffect(() => {
+    fetchGrants();
+  }, [filters, sortBy]);
+
+  async function fetchCategories() {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .eq('is_active', true);
+
+    if (error) {
+      console.error('Error fetching categories:', error);
+      return;
+    }
+
+    setCategories(data || []);
+  }
+
+  async function fetchGrants() {
+    setLoading(true);
+    let query = supabase
+      .from('grants')
+      .select('*')
+      .eq('is_active', true);
+
+    // Apply filters
+    if (filters.category) {
+      query = query.eq('category', filters.category);
+    }
+
+    if (filters.country) {
+      query = query.contains('eligible_countries', [filters.country]);
+    }
+
+    if (filters.minAmount || filters.maxAmount) {
+      // Convert amount string to number for comparison
+      // Remove currency symbols and commas, then parse as float
+      query = query.filter('amount', 'not.eq', null);
+     
+      if (filters.minAmount) {
+        query = query.filter('amount', 'gte', filters.minAmount);
+      }
+      if (filters.maxAmount) {
+        query = query.filter('amount', 'lte', filters.maxAmount);
+      }
+    }
+
+    // Apply sorting
+    if (sortBy === 'deadline') {
+      query = query.order('deadline', { ascending: true });
+    } else if (sortBy === 'amount') {
+      // Note: This is a simplified sort. You might need to implement custom sorting logic
+      // for amount strings containing currency symbols
+      query = query.order('amount', { ascending: false });
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      setError(error);
+      setLoading(false);
+      return;
+    }
+
+    // Post-process the results for amount filtering if needed
+    let filteredData = data || [];
+    if (filters.minAmount || filters.maxAmount) {
+      const processAmount = (amount: string) => 
+        parseFloat(amount.replace(/[$,]/g, ''));
+
+      filteredData = filteredData.filter(grant => {
+        const grantAmount = processAmount(grant.amount);
+        const min = filters.minAmount ? processAmount(filters.minAmount) : 0;
+        const max = filters.maxAmount ? processAmount(filters.maxAmount) : Infinity;
+        return grantAmount >= min && grantAmount <= max;
+      });
+    }
+
+    setGrants(filteredData);
+    setLoading(false);
+  }
 
   return (
     <main className="min-h-screen bg-zinc-100">
-      {/* Hero Section - matching home page style */}
+      {/* Hero Section */}
       <section className="bg-zinc-900 text-white py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
@@ -48,7 +161,7 @@ export default function GrantsPage() {
         </div>
       </section>
 
-      {/* Filters Section - styled like Categories section */}
+      {/* Filters Section */}
       <section className="py-16 container mx-auto px-4">
         <div className="flex justify-between items-center mb-12 flex-wrap">
           <h2 className={`${greatVibes.className} text-4xl`}>
@@ -126,8 +239,13 @@ export default function GrantsPage() {
                 className="w-full p-3 border rounded-md hover:border-yellow-400 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none"
               >
                 <option value="">All Countries</option>
-                <option value="US">United States</option>
-                <option value="UK">United Kingdom</option>
+                {Array.from(
+                  new Set(grants.flatMap((grant) => grant.eligible_countries))
+                ).map((country) => (
+                  <option key={country} value={country}>
+                    {country}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -136,17 +254,21 @@ export default function GrantsPage() {
                 Category
               </label>
               <select
-                value={filters.category}
+                value={filters.category?.toString() || ""}
                 onChange={(e) =>
-                  setFilters({ ...filters, category: e.target.value })
+                  setFilters({
+                    ...filters,
+                    category: e.target.value ? parseInt(e.target.value) : null,
+                  })
                 }
                 className="w-full p-2 border rounded-md"
               >
                 <option value="">All Categories</option>
-                <option value="research">Research</option>
-                <option value="innovation">Innovation</option>
-                <option value="startup">Startup</option>
-                {/* Add more categories */}
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -156,7 +278,7 @@ export default function GrantsPage() {
               </label>
               <div className="flex gap-2">
                 <input
-                  type="number"
+                  type="text"
                   placeholder="Min"
                   value={filters.minAmount}
                   onChange={(e) =>
@@ -165,7 +287,7 @@ export default function GrantsPage() {
                   className="w-full p-2 border rounded-md"
                 />
                 <input
-                  type="number"
+                  type="text"
                   placeholder="Max"
                   value={filters.maxAmount}
                   onChange={(e) =>
@@ -182,7 +304,7 @@ export default function GrantsPage() {
               </label>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) => setSortBy(e.target.value as "deadline" | "amount")}
                 className="w-full p-2 border rounded-md"
               >
                 <option value="deadline">Deadline</option>
@@ -192,53 +314,24 @@ export default function GrantsPage() {
           </div>
         </div>
 
-        {/* Featured Ad Banner */}
-        <div className="mb-8">
-          <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg overflow-hidden">
-            <div className="flex flex-col md:flex-row items-center">
-              <div className="w-full md:w-1/3 h-48 md:h-64">
-                <img
-                  src={featuredAd.image}
-                  alt={featuredAd.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="w-full md:w-2/3 p-8">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-semibold bg-black/20 text-white px-2 py-1 rounded">
-                    SPONSORED
-                  </span>
-                  <span className="text-sm text-white">
-                    {featuredAd.sponsor}
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  {featuredAd.title}
-                </h3>
-                <p className="text-white/90 mb-6">{featuredAd.description}</p>
-                <a
-                  href={featuredAd.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-black text-white px-6 py-3 rounded-md hover:bg-zinc-800 transition duration-300"
-                >
-                  Learn More
-                </a>
-              </div>
-            </div>
+        {/* Grants List */}
+        {loading ? (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto"></div>
           </div>
-        </div>
-
-        {/* Grants List with Inline Ads */}
-        <div
-          className={`${
-            viewMode === "grid"
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-              : "grid grid-cols-1 gap-8"
-          }`}
-        >
-          {mockGrants.map((grant, index) => (
-            <>
+        ) : error ? (
+          <div className="text-center py-8 text-red-500">
+            Error loading grants: {error.message}
+          </div>
+        ) : (
+          <div
+            className={`${
+              viewMode === "grid"
+                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                : "grid grid-cols-1 gap-8"
+            }`}
+          >
+            {grants.map((grant) => (
               <div
                 key={grant.id}
                 className={`bg-zinc-700 text-white rounded-lg overflow-hidden hover:transform hover:scale-[1.02] transition duration-300 flex ${
@@ -251,7 +344,7 @@ export default function GrantsPage() {
                   } bg-gray-300 relative`}
                 >
                   <img
-                    src={grant.image}
+                    src={grant.image_url || '/placeholder-image.jpg'}
                     alt={grant.title}
                     className="w-full h-full object-cover"
                   />
@@ -263,13 +356,15 @@ export default function GrantsPage() {
                 <div className="p-6 flex flex-col h-full flex-grow">
                   <h2 className="text-xl font-bold mb-3">{grant.title}</h2>
                   <p className="text-gray-300 mb-4 flex-grow">
-                    {grant.description}
+                    {grant.description.slice(0, 100)}...
                   </p>
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <span className="text-yellow-400">⏰</span>
-                      <span className="text-gray-300">{grant.deadline}</span>
+                      <span className="text-gray-300">
+                        {format(new Date(grant.deadline), 'PPP')}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-yellow-400">🏢</span>
@@ -280,7 +375,7 @@ export default function GrantsPage() {
 
                     <div className="pt-4 border-t border-zinc-600">
                       <div className="flex flex-wrap gap-2">
-                        {grant.eligibleCountries.map((country) => (
+                        {grant.eligible_countries.map((country) => (
                           <span
                             key={country}
                             className="bg-zinc-600 px-3 py-1 rounded-full text-sm hover:bg-yellow-400 hover:text-black transition duration-300"
@@ -291,188 +386,21 @@ export default function GrantsPage() {
                       </div>
                     </div>
 
-                    <button className="w-full bg-yellow-400 text-black px-6 py-3 rounded-md hover:bg-yellow-500 transition duration-300 mt-4">
+                    <button className="w-full bg-yellow-400 text-black px-6 py-3 rounded-md hover:bg-yellow-500 transition duration-300 mt-4"
+                     onClick={() => {
+                      router.push(
+                        `/grants/${grant.id}?title=${grant.title}`
+                      );
+                    }}>
                       View Details
                     </button>
                   </div>
                 </div>
               </div>
-
-              {/* Insert ad after every 5 grants */}
-              {(index + 1) % 5 === 0 && (
-                <div
-                  className={`${
-                    viewMode === "list"
-                      ? "col-span-1"
-                      : "md:col-span-2 lg:col-span-3"
-                  }`}
-                >
-                  <div className="bg-white rounded-lg overflow-hidden shadow-md">
-                    <div className="flex flex-col sm:flex-row items-center">
-                      <div className="w-full sm:w-1/3 h-48">
-                        <img
-                          src={
-                            inlineAds[Math.floor(index / 5) % inlineAds.length]
-                              .image
-                          }
-                          alt="Advertisement"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="w-full sm:w-2/3 p-6">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs font-semibold bg-gray-200 text-gray-600 px-2 py-1 rounded">
-                            SPONSORED
-                          </span>
-                          <span className="text-sm text-gray-500">
-                            {
-                              inlineAds[
-                                Math.floor(index / 5) % inlineAds.length
-                              ].sponsor
-                            }
-                          </span>
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-3">
-                          {
-                            inlineAds[Math.floor(index / 5) % inlineAds.length]
-                              .title
-                          }
-                        </h3>
-                        <p className="text-gray-600 mb-4">
-                          {
-                            inlineAds[Math.floor(index / 5) % inlineAds.length]
-                              .description
-                          }
-                        </p>
-                        <a
-                          href={
-                            inlineAds[Math.floor(index / 5) % inlineAds.length]
-                              .link
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-block bg-yellow-400 text-black px-6 py-3 rounded-md hover:bg-yellow-500 transition duration-300"
-                        >
-                          Learn More
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          ))}
-        </div>
-      </section>
-
-      {/* Newsletter Section - copied from home page */}
-      <section className="py-16 container mx-auto px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className={`${greatVibes.className} text-4xl mb-6`}>
-            Stay Updated
-          </h2>
-          <p className="text-gray-600 mb-8">
-            Subscribe to our newsletter to receive the latest grant
-            opportunities directly in your inbox
-          </p>
-          <div className="flex gap-4 justify-center">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="px-4 py-3 rounded-md border border-gray-300 w-full max-w-md"
-            />
-            <button className="bg-yellow-400 text-black px-6 py-3 rounded-md hover:bg-yellow-500 transition duration-300">
-              Subscribe
-            </button>
+            ))}
           </div>
-        </div>
+        )}
       </section>
     </main>
   );
 }
-
-// Mock data - replace with actual API call
-const mockGrants: Grant[] = [
-  {
-    id: "1",
-    title: "Innovation Research Grant 2024",
-    description:
-      "Supporting breakthrough research in artificial intelligence and machine learning",
-    amount: "$50,000",
-    deadline: "April 30, 2024",
-    organization: "Tech Foundation",
-    eligibleCountries: ["US", "UK", "Canada"],
-    category: "research",
-    requirements: [
-      "PhD in Computer Science",
-      "Research proposal",
-      "University affiliation",
-    ],
-    image: "https://picsum.photos/seed/grant1/800/600",
-  },
-  {
-    id: "2",
-    title: "Sustainable Energy Research Fund",
-    description:
-      "Funding for innovative projects in renewable energy and sustainability",
-    amount: "$75,000",
-    deadline: "May 15, 2024",
-    organization: "Green Energy Institute",
-    eligibleCountries: ["EU", "UK", "Canada"],
-    category: "research",
-    requirements: ["Research proposal", "University affiliation"],
-    image: "https://picsum.photos/seed/grant2/800/600",
-  },
-  {
-    id: "3",
-    title: "Digital Health Innovation Grant",
-    description: "Supporting healthcare technology innovations and research",
-    amount: "$100,000",
-    deadline: "June 1, 2024",
-    organization: "Health Tech Foundation",
-    eligibleCountries: ["US", "Germany", "Japan"],
-    category: "innovation",
-    requirements: ["Healthcare background", "Prototype"],
-    image: "https://picsum.photos/seed/grant3/800/600",
-  },
-  // Add more mock grants as needed...
-];
-
-// Add mock ad data
-const featuredAd: AdPlacement = {
-  id: "featured-1",
-  title: "Launch Your Research Career with ResearchHub Pro",
-  description:
-    "Get unlimited access to grant opportunities, AI-powered matching, and expert grant writing tools. Special offer: 3 months free!",
-  image: "https://picsum.photos/seed/featured-ad/800/600",
-  link: "https://example.com/special-offer",
-  sponsor: "ResearchHub Pro",
-};
-
-const inlineAds: AdPlacement[] = [
-  {
-    id: "inline-1",
-    title: "Grant Writing Workshop",
-    description:
-      "Join our expert-led workshop and increase your chances of securing research funding.",
-    image: "https://picsum.photos/seed/ad1/800/600",
-    link: "https://example.com/workshop",
-    sponsor: "GrantWriting Academy",
-  },
-  {
-    id: "inline-2",
-    title: "Research Equipment Deals",
-    description: "Special discounts on lab equipment for grant recipients.",
-    image: "https://picsum.photos/seed/ad2/800/600",
-    link: "https://example.com/equipment",
-    sponsor: "LabTech Solutions",
-  },
-  {
-    id: "inline-3",
-    title: "Academic Publishing Service",
-    description: "Professional editing and publishing support for researchers.",
-    image: "https://picsum.photos/seed/ad3/800/600",
-    link: "https://example.com/publishing",
-    sponsor: "ResearchPublish Pro",
-  },
-];

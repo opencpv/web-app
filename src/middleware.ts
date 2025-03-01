@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { updateSession } from "./lib/supabase/middleware";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // Check if USE_WAITLIST is enabled
   const useWaitlist = process.env.USE_WAITLIST === "true";
 
@@ -20,7 +21,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Allow access to all other pages when waitlist is disabled or conditions not met
-  return NextResponse.next();
+  return await updateSession(request);
 }
 
 // Configure which paths the middleware will run on
@@ -33,6 +34,6 @@ export const config = {
      * 3. /static (static files)
      * 4. all files in public directory
      */
-    "/((?!api|_next|static|[\\w-]+\\.\\w+).*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

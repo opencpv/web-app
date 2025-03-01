@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { greatVibes } from "../../fonts/font";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+import { useParams } from "next/navigation";
 
 interface Grant {
   id: string;
@@ -9,13 +12,13 @@ interface Grant {
   amount: string;
   deadline: string;
   organization: string;
-  eligibleCountries: string[];
-  category: string;
+  eligible_countries: string[];
+  category: any;
+  image_url: string;
   requirements: string[];
-  image: string;
-  // Additional fields for the detailed view
-  applicationProcess: string[];
-  contactInfo: {
+  application_process: string[];
+  apply_link: string;
+  contact_info: {
     email: string;
     website: string;
   };
@@ -25,350 +28,201 @@ interface Grant {
   }[];
 }
 
-interface AdPlacement {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  sponsor: string;
-}
-
-export default function GrantPage() {
-  // In a real app, you would fetch the grant data using the ID
-  const grant = mockGrant;
-
-  return (
-    <main className="min-h-screen bg-zinc-100">
-      {/* Hero Section with Grant Image */}
-      <section className="relative h-96">
-        <div className="absolute inset-0">
-          <img
-            src={grant.image}
-            alt={grant.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-        <div className="relative container mx-auto px-4 h-full flex items-end pb-12">
-          <div className="text-white">
-            <Link
-              href="/grants"
-              className="inline-flex items-center text-yellow-400 mb-4 hover:text-yellow-300"
-            >
-              ← Back to Grants
-            </Link>
-            <h1 className={`${greatVibes.className} text-5xl mb-4`}>
-              {grant.title}
-            </h1>
-            <div className="flex flex-wrap gap-4 items-center">
-              <span className="bg-yellow-400 text-black px-4 py-2 rounded-full font-bold">
-                {grant.amount}
-              </span>
-              <span className="bg-zinc-700 px-4 py-2 rounded-full">
-                Deadline: {grant.deadline}
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Ad Banner - Below Hero */}
-      <div className="container mx-auto px-4 -mt-8 relative z-10">
-        <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg overflow-hidden shadow-lg">
-          <div className="flex flex-col md:flex-row items-center">
-            <div className="w-full md:w-1/3 h-48">
-              <img
-                src={featuredAd.image}
-                alt={featuredAd.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="w-full md:w-2/3 p-8">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-semibold bg-black/20 text-white px-2 py-1 rounded">
-                  SPONSORED
-                </span>
-                <span className="text-sm text-white">{featuredAd.sponsor}</span>
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">
-                {featuredAd.title}
-              </h3>
-              <p className="text-white/90 mb-6">{featuredAd.description}</p>
-              <a
-                href={featuredAd.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-black text-white px-6 py-3 rounded-md hover:bg-zinc-800 transition duration-300"
-              >
-                Learn More
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Grant Details */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Description */}
-              <div className="bg-white rounded-lg shadow-md p-8">
-                <h2 className={`${greatVibes.className} text-3xl mb-4`}>
-                  About This Grant
-                </h2>
-                <p className="text-gray-600">{grant.description}</p>
-              </div>
-
-              {/* Requirements */}
-              <div className="bg-white rounded-lg shadow-md p-8">
-                <h2 className={`${greatVibes.className} text-3xl mb-4`}>
-                  Requirements
-                </h2>
-                <ul className="list-disc list-inside space-y-2 text-gray-600">
-                  {grant.requirements.map((req, index) => (
-                    <li key={index}>{req}</li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Inline Ad - Between Requirements and Application Process */}
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="flex flex-col sm:flex-row items-center">
-                  <div className="w-full sm:w-1/3 h-48">
-                    <img
-                      src={inlineAd1.image}
-                      alt={inlineAd1.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="w-full sm:w-2/3 p-6">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-semibold bg-gray-200 text-gray-600 px-2 py-1 rounded">
-                        SPONSORED
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {inlineAd1.sponsor}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-3">
-                      {inlineAd1.title}
-                    </h3>
-                    <p className="text-gray-600 mb-4">
-                      {inlineAd1.description}
-                    </p>
-                    <a
-                      href={inlineAd1.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block bg-yellow-400 text-black px-6 py-3 rounded-md hover:bg-yellow-500 transition duration-300"
-                    >
-                      Learn More
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Application Process */}
-              <div className="bg-white rounded-lg shadow-md p-8">
-                <h2 className={`${greatVibes.className} text-3xl mb-4`}>
-                  How to Apply
-                </h2>
-                <ol className="list-decimal list-inside space-y-4 text-gray-600">
-                  {grant.applicationProcess.map((step, index) => (
-                    <li key={index}>{step}</li>
-                  ))}
-                </ol>
-              </div>
-
-              {/* Timeline */}
-              <div className="bg-white rounded-lg shadow-md p-8">
-                <h2 className={`${greatVibes.className} text-3xl mb-4`}>
-                  Important Dates
-                </h2>
-                <div className="space-y-4">
-                  {grant.timeline.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-4 text-gray-600"
-                    >
-                      <div className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm">
-                        {item.date}
-                      </div>
-                      <div>{item.event}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Sidebar */}
-            <div className="space-y-8">
-              {/* Quick Info Card */}
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-xl font-bold mb-4">Quick Information</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm text-gray-500">
-                      Organization
-                    </label>
-                    <p className="font-medium">{grant.organization}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-500">Category</label>
-                    <p className="font-medium capitalize">{grant.category}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-500">
-                      Eligible Countries
-                    </label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {grant.eligibleCountries.map((country) => (
-                        <span
-                          key={country}
-                          className="bg-gray-100 px-3 py-1 rounded-full text-sm"
-                        >
-                          {country}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Sidebar Ad */}
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="relative">
-                  <img
-                    src={sidebarAd.image}
-                    alt={sidebarAd.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <span className="absolute top-2 right-2 text-xs font-semibold bg-black/20 text-white px-2 py-1 rounded">
-                    SPONSORED
-                  </span>
-                </div>
-                <div className="p-6">
-                  <span className="text-sm text-gray-500 mb-2 block">
-                    {sidebarAd.sponsor}
-                  </span>
-                  <h3 className="text-lg font-bold text-gray-800 mb-3">
-                    {sidebarAd.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4">{sidebarAd.description}</p>
-                  <a
-                    href={sidebarAd.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block bg-yellow-400 text-black px-4 py-2 rounded-md hover:bg-yellow-500 transition duration-300 w-full text-center"
-                  >
-                    Learn More
-                  </a>
-                </div>
-              </div>
-
-              {/* Contact Card */}
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-xl font-bold mb-4">Contact Information</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm text-gray-500">Email</label>
-                    <p className="font-medium">{grant.contactInfo.email}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm text-gray-500">Website</label>
-                    <a
-                      href={grant.contactInfo.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-yellow-600 hover:text-yellow-700 block"
-                    >
-                      Visit Official Website
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              {/* Apply Button */}
-              <button className="w-full bg-yellow-400 text-black px-6 py-4 rounded-md hover:bg-yellow-500 transition duration-300 font-bold text-lg">
-                Apply Now
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+const supabase = createClient();
+const GrantPage = () => {
+  const [grant, setGrant] = useState<Grant | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [formattedDeadline, setFormattedDeadline] = useState<string | null>(
+    null
   );
-}
+  const { slug } = useParams();
 
-const featuredAd: AdPlacement = {
-  id: "featured-1",
-  title: "Master Grant Writing with Our Expert Course",
-  description:
-    "Learn how to write winning grant proposals with our comprehensive online course. Special discount for researchers!",
-  image: "https://picsum.photos/seed/featured-ad/800/600",
-  link: "https://example.com/grant-writing-course",
-  sponsor: "GrantWriting Pro",
+  useEffect(() => {
+    setLoading(() => true);
+    const fetchGrant = async () => {
+      if (slug) {
+        const { data, error } = await supabase
+          .from("grants")
+          .select("*,category(*)")
+          .eq("id", slug)
+          .single();
+        setGrant(data);
+
+        if (error) {
+          console.error("Error fetching grant:", error);
+          return;
+        }
+        console.log(data);
+        setLoading(() => false);
+      }
+    };
+
+    fetchGrant();
+  }, [slug]);
+
+  useEffect(() => {
+    if (grant) {
+      setFormattedDeadline(new Date(grant.deadline).toLocaleDateString());
+    }
+  }, [grant]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-zinc-100 flex items-center justify-center">
+        <p className="text-gray-600">Loading...</p>
+      </main>
+    );
+  }
+
+  if (grant) {
+    return (
+      <main className="min-h-screen bg-zinc-100">
+        <section className="relative h-96">
+          <div className="absolute inset-0">
+            <img
+              src={grant.image_url}
+              alt={grant.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/50" />
+          </div>
+          <div className="relative container mx-auto px-4 h-full flex items-end pb-12">
+            <div className="text-white">
+              <Link
+                href="/grants"
+                className="inline-flex items-center text-yellow-400 mb-4 hover:text-yellow-300"
+              >
+                ← Back to Grants
+              </Link>
+              <h1 className={`text-5xl mb-4 `}>{grant.title}</h1>
+              <div className="flex flex-wrap gap-4 items-center">
+                <span className="bg-yellow-400 text-black px-4 py-2 rounded-full font-bold">
+                  {grant.amount}
+                </span>
+                {formattedDeadline && (
+                  <span className="bg-zinc-700 px-4 py-2 rounded-full">
+                    Deadline: {formattedDeadline}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2 space-y-8">
+                <div className="bg-white rounded-lg shadow-md p-8">
+                  <h2 className={`text-3xl mb-4`}>About This Grant</h2>
+                  <p className="text-gray-600">{grant.description}</p>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-md p-8">
+                  <h2 className="text-3xl mb-4">Requirements</h2>
+                  <ul className="list-disc list-inside space-y-2 text-gray-600">
+                    {grant.requirements.map((req, index) => (
+                      <li key={index}>{req}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-md p-8">
+                  <h2 className={`text-3xl mb-4`}>Application Process</h2>
+                  <ol className="list-decimal list-inside space-y-4 text-gray-600">
+                    {grant.application_process.map((step, index) => (
+                      <li key={index}>{step}</li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-md p-8">
+                  <h2 className={`text-3xl mb-4`}>Important Dates</h2>
+                  <div className="space-y-4">
+                    {grant.timeline.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex items-start gap-4 text-gray-600"
+                      >
+                        <div className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm">
+                          {new Date(item.date).toLocaleDateString()}
+                        </div>
+                        <div>{item.event}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-8">
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h3 className="text-xl font-bold mb-4">Quick Information</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm text-gray-500">
+                        Organization
+                      </label>
+                      <p className="font-medium">{grant.organization}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Category</label>
+                      <p className="font-medium capitalize">
+                        {grant.category.name}
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">
+                        Eligible Countries
+                      </label>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {grant.eligible_countries.map((country) => (
+                          <span
+                            key={country}
+                            className="bg-gray-100 px-3 py-1 rounded-full text-sm"
+                          >
+                            {country}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h3 className="text-xl font-bold mb-4">
+                    Contact Information
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm text-gray-500">Email</label>
+                      <p className="font-medium">{grant.contact_info.email}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-500">Website</label>
+                      <a
+                        href={grant.contact_info.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-yellow-600 hover:text-yellow-700 block"
+                      >
+                        Visit Official Website
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                {/* Register Button */}
+                <button
+                  className="fixed bottom-0 right-0 w-full bg-yellow-400 text-black px-6 py-4 rounded-md hover:bg-yellow-500 transition duration-300 font-bold text-lg"
+                  onClick={() => window.open(grant.apply_link, "_blank")}
+                >
+                  Apply Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
 };
 
-const inlineAd1: AdPlacement = {
-  id: "inline-1",
-  title: "Research Equipment Deals",
-  description:
-    "Get exclusive discounts on lab equipment and research tools. Perfect for grant recipients!",
-  image: "https://picsum.photos/seed/inline-ad/800/600",
-  link: "https://example.com/lab-equipment",
-  sponsor: "LabTech Solutions",
-};
-
-const sidebarAd: AdPlacement = {
-  id: "sidebar-1",
-  title: "Academic Publishing Support",
-  description: "Professional editing and publishing services for researchers",
-  image: "https://picsum.photos/seed/sidebar-ad/800/600",
-  link: "https://example.com/publishing",
-  sponsor: "ResearchPublish Pro",
-};
-
-// Mock data - replace with API call
-const mockGrant: Grant = {
-  id: "1",
-  title: "Innovation Research Grant 2024",
-  description:
-    "Supporting breakthrough research in artificial intelligence and machine learning with a focus on developing novel approaches to solving complex problems. This grant aims to foster innovation in the field of AI and promote collaboration between academic institutions and industry partners.",
-  amount: "$50,000",
-  deadline: "April 30, 2024",
-  organization: "Tech Foundation",
-  eligibleCountries: ["US", "UK", "Canada"],
-  category: "research",
-  requirements: [
-    "PhD in Computer Science or related field",
-    "Strong research background in AI/ML",
-    "University affiliation",
-    "Detailed research proposal",
-    "Budget plan",
-    "Timeline for project completion",
-  ],
-  image: "https://picsum.photos/seed/grant1/1920/1080",
-  applicationProcess: [
-    "Review eligibility criteria and requirements",
-    "Prepare research proposal and supporting documents",
-    "Complete online application form",
-    "Submit budget plan and timeline",
-    "Provide letters of recommendation",
-    "Wait for review committee decision",
-  ],
-  contactInfo: {
-    email: "grants@techfoundation.org",
-    website: "https://example.com/tech-foundation",
-  },
-  timeline: [
-    { date: "Mar 1, 2024", event: "Application Opens" },
-    { date: "Apr 30, 2024", event: "Application Deadline" },
-    { date: "May 15, 2024", event: "Initial Review" },
-    { date: "Jun 1, 2024", event: "Final Decision" },
-    { date: "Jul 1, 2024", event: "Project Start Date" },
-  ],
-};
+export default GrantPage;
