@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/ui/title-text/section-heading";
 import NewsletterSection from "@/components/home/newsletter-section";
 import { Hackathon, AdPlacement } from "../../lib/types";
 import AdBannerCard from "@/components/cards/ad-banner-card";
+import HackathonCard from "@/components/cards/hackathon-card";
 
 export default function HackathonsPage() {
   const [filters, setFilters] = useState({
@@ -109,41 +110,6 @@ export default function HackathonsPage() {
 
         {/* Featured Ad Banner */}
         <AdBannerCard featuredAd={featuredAd} />
-        <div className="mb-8">
-          <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg overflow-hidden">
-            <div className="flex flex-col md:flex-row items-center">
-              <div className="w-full md:w-1/3 h-48 md:h-64">
-                <img
-                  src={featuredAd.image}
-                  alt={featuredAd.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="w-full md:w-2/3 p-8">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-semibold bg-black/20 text-white px-2 py-1 rounded">
-                    SPONSORED
-                  </span>
-                  <span className="text-sm text-white">
-                    {featuredAd.sponsor}
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  {featuredAd.title}
-                </h3>
-                <p className="text-white/90 mb-6">{featuredAd.description}</p>
-                <a
-                  href={featuredAd.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block bg-black text-white px-6 py-3 rounded-md hover:bg-zinc-800 transition duration-300"
-                >
-                  Learn More
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Hackathons List */}
         <div
@@ -154,72 +120,8 @@ export default function HackathonsPage() {
           }`}
         >
           {mockHackathons.map((hackathon, index) => (
-            <>
-              <div
-                key={hackathon.id}
-                className={`bg-zinc-700 text-white rounded-lg overflow-hidden hover:transform hover:scale-[1.02] transition duration-300 flex ${
-                  viewMode === "list" ? "flex-row" : "flex-col"
-                }`}
-              >
-                <div
-                  className={`${
-                    viewMode === "list" ? "w-72" : "h-48"
-                  } bg-gray-300 relative`}
-                >
-                  <img
-                    src={hackathon.image}
-                    alt={hackathon.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-semibold">
-                    {hackathon.prizePool}
-                  </div>
-                </div>
-
-                <div className="p-6 flex flex-col h-full flex-grow">
-                  <h2 className="text-xl font-bold mb-3">{hackathon.title}</h2>
-                  <p className="text-gray-300 mb-4 flex-grow">
-                    {hackathon.description}
-                  </p>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-yellow-400">⏰</span>
-                      <span className="text-gray-300">
-                        {hackathon.deadline}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-yellow-400">🏢</span>
-                      <span className="text-gray-300">
-                        {hackathon.organizer}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-yellow-400">👥</span>
-                      <span className="text-gray-300">
-                        {hackathon.teamSize}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-yellow-400">⌛</span>
-                      <span className="text-gray-300">
-                        {hackathon.duration}
-                      </span>
-                    </div>
-
-                    <div className="pt-4 border-t border-zinc-600">
-                      <span className="inline-block bg-zinc-600 px-3 py-1 rounded-full text-sm hover:bg-yellow-400 hover:text-black transition duration-300">
-                        {hackathon.mode}
-                      </span>
-                    </div>
-
-                    <button className="w-full bg-yellow-400 text-black px-6 py-3 rounded-md hover:bg-yellow-500 transition duration-300 mt-4">
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              </div>
+            <div key={index}>
+              <HackathonCard hackathon={hackathon} viewMode={viewMode} />
 
               {/* Insert ad after every 5 hackathons */}
               {(index + 1) % 5 === 0 && (
@@ -283,7 +185,7 @@ export default function HackathonsPage() {
                   </div>
                 </div>
               )}
-            </>
+            </div>
           ))}
         </div>
       </section>
@@ -299,17 +201,71 @@ const mockHackathons: Hackathon[] = [
   {
     id: "1",
     title: "AI Innovation Hackathon 2024",
+    summary:
+      "Join us for an exciting 48-hour hackathon focused on building innovative AI solutions. Work with cutting-edge technologies, learn from industry experts, and compete for amazing prizes!",
     description:
-      "Build the next generation of AI-powered applications in this 48-hour coding challenge",
+      "Join us for an exciting 48-hour hackathon focused on building innovative AI solutions. Work with cutting-edge technologies, learn from industry experts, and compete for amazing prizes!",
     prizePool: "$20,000",
     deadline: "April 15, 2024",
     organizer: "TechCorp",
     mode: "Virtual",
     category: "ai-ml",
     requirements: ["GitHub account", "Video submission"],
-    image: "https://picsum.photos/seed/hack1/800/600",
+    image: "https://picsum.photos/seed/hack1/1920/1080",
     teamSize: "2-4 members",
     duration: "48 hours",
+    schedule: [
+      { date: "Apr 15, 2024", event: "Registration Deadline" },
+      { date: "Apr 20, 2024", event: "Opening Ceremony" },
+      { date: "Apr 20-22, 2024", event: "Hacking Period" },
+      { date: "Apr 22, 2024", event: "Project Submissions" },
+      { date: "Apr 23, 2024", event: "Judging & Awards" },
+    ],
+    prizes: [
+      {
+        place: "1st Place",
+        amount: "$10,000",
+        description: "Plus cloud credits and mentorship opportunities",
+      },
+      {
+        place: "2nd Place",
+        amount: "$6,000",
+        description: "Plus premium subscriptions to dev tools",
+      },
+      {
+        place: "3rd Place",
+        amount: "$4,000",
+        description: "Plus swag packages",
+      },
+    ],
+    rules: [
+      "All code must be written during the hackathon",
+      "Teams must consist of 2-4 members",
+      "Use of open-source libraries is allowed",
+      "Projects must be original work",
+      "Submissions must include source code and demo video",
+      "Teams must present their projects to judges",
+    ],
+    resources: [
+      {
+        title: "Starter Templates & Documentation",
+        link: "https://example.com/resources",
+      },
+      {
+        title: "Dataset Access",
+        link: "https://example.com/datasets",
+      },
+      {
+        title: "API Documentation",
+        link: "https://example.com/api-docs",
+      },
+    ],
+    contactInfo: {
+      email: "hackathon@techcorp.com",
+      discord: "discord.gg/techcorp-hack",
+      website: "https://example.com/hackathon",
+    },
+    registerLink: "https://example.com/register",
   },
   // Add more mock hackathons...
 ];

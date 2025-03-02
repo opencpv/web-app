@@ -11,10 +11,10 @@ interface AdBannerCardProps {
 const AdBannerCard = ({ featuredAd }: AdBannerCardProps) => {
   return (
     <>
-      <div className="mb-8">
-        <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg overflow-hidden">
+      <div className="container mx-auto px-4 -mt-8 relative z-10">
+        <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg overflow-hidden shadow-lg">
           <div className="flex flex-col md:flex-row items-center">
-            <div className="w-full md:w-1/3 h-48 md:h-64">
+            <div className="w-full md:w-1/3 h-full">
               <img
                 src={featuredAd.image}
                 alt={featuredAd.title}

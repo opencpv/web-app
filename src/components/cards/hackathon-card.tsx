@@ -30,7 +30,7 @@ const HackathonCard = ({ hackathon, viewMode }: HackathonCardProps) => {
 
       <div className="p-6 flex flex-col h-full flex-grow">
         <h2 className="text-xl font-bold mb-3">{hackathon.title}</h2>
-        <p className="text-gray-300 mb-4 flex-grow">{hackathon.description}</p>
+        <p className="text-gray-300 mb-4 flex-grow">{hackathon.summary}</p>
 
         <div className="space-y-3">
           <div className="flex items-center gap-2">

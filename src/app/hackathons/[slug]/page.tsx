@@ -1,60 +1,20 @@
 "use client";
+import { AdPlacement, Hackathon } from "@/lib/types";
 import { greatVibes } from "../../fonts/font";
 import Link from "next/link";
-
-interface Hackathon {
-  id: string;
-  title: string;
-  description: string;
-  prizePool: string;
-  deadline: string;
-  organizer: string;
-  mode: "In-Person" | "Virtual" | "Hybrid";
-  location?: string;
-  category: string;
-  requirements: string[];
-  image: string;
-  teamSize: string;
-  duration: string;
-  // Additional fields for detailed view
-  schedule: {
-    date: string;
-    event: string;
-  }[];
-  prizes: {
-    place: string;
-    amount: string;
-    description: string;
-  }[];
-  rules: string[];
-  resources: {
-    title: string;
-    link: string;
-  }[];
-  contactInfo: {
-    email: string;
-    discord?: string;
-    website: string;
-  };
-}
-
-interface AdPlacement {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  sponsor: string;
-}
+import { useRouter } from "next/navigation";
+import AdBannerCard from "@/components/cards/ad-banner-card";
+import EventScheduleCard from "@/components/cards/EventSchedule";
 
 export default function HackathonPage() {
   // In a real app, you would fetch the hackathon data using the ID
   const hackathon = mockHackathon;
+  const router = useRouter();
 
   return (
     <main className="min-h-screen bg-zinc-100">
       {/* Hero Section */}
-      <section className="relative h-96">
+      <section className="relative h-[400px]">
         <div className="absolute inset-0">
           <img
             src={hackathon.image}
@@ -63,11 +23,11 @@ export default function HackathonPage() {
           />
           <div className="absolute inset-0 bg-black/50" />
         </div>
-        <div className="relative container mx-auto px-4 h-full flex items-end pb-12">
-          <div className="text-white">
+        <div className="relative container mx-auto px-4 h-full flex items-end pb-12 pt-10">
+          <div className="text-white ">
             <Link
               href="/hackathons"
-              className="inline-flex items-center text-yellow-400 mb-4 hover:text-yellow-300"
+              className="inline-flex items-center text-yellow-400 mb-4 hover:text-yellow-300 "
             >
               ← Back to Hackathons
             </Link>
@@ -88,41 +48,8 @@ export default function HackathonPage() {
           </div>
         </div>
       </section>
-
       {/* Featured Ad Banner - Below Hero */}
-      <div className="container mx-auto px-4 -mt-8 relative z-10">
-        <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg overflow-hidden shadow-lg">
-          <div className="flex flex-col md:flex-row items-center">
-            <div className="w-full md:w-1/3 h-48">
-              <img
-                src={featuredAd.image}
-                alt={featuredAd.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="w-full md:w-2/3 p-8">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-semibold bg-black/20 text-white px-2 py-1 rounded">
-                  SPONSORED
-                </span>
-                <span className="text-sm text-white">{featuredAd.sponsor}</span>
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-4">
-                {featuredAd.title}
-              </h3>
-              <p className="text-white/90 mb-6">{featuredAd.description}</p>
-              <a
-                href={featuredAd.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-black text-white px-6 py-3 rounded-md hover:bg-zinc-800 transition duration-300"
-              >
-                Learn More
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <AdBannerCard featuredAd={featuredAd} />
 
       {/* Main Content */}
       <section className="py-12">
@@ -147,7 +74,7 @@ export default function HackathonPage() {
                   {hackathon.prizes.map((prize, index) => (
                     <div
                       key={index}
-                      className="flex items-start gap-4 bg-gray-50 p-4 rounded-lg"
+                      className="flex flex-col md:felx-row items-start gap-4 bg-gray-50 p-4 rounded-lg"
                     >
                       <div className="bg-yellow-400 text-black px-4 py-2 rounded-full font-bold">
                         {prize.place}
@@ -166,9 +93,9 @@ export default function HackathonPage() {
                 <h2 className={`${greatVibes.className} text-3xl mb-4`}>
                   Rules & Guidelines
                 </h2>
-                <ul className="list-disc list-inside space-y-2 text-gray-600">
+                <ul className="list-inside space-y-2 text-gray-600">
                   {hackathon.rules.map((rule, index) => (
-                    <li key={index}>{rule}</li>
+                    <li key={index}>⭐ {rule}</li>
                   ))}
                 </ul>
               </div>
@@ -211,24 +138,7 @@ export default function HackathonPage() {
               </div>
 
               {/* Schedule */}
-              <div className="bg-white rounded-lg shadow-md p-8">
-                <h2 className={`${greatVibes.className} text-3xl mb-4`}>
-                  Event Schedule
-                </h2>
-                <div className="space-y-4">
-                  {hackathon.schedule.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-4 text-gray-600"
-                    >
-                      <div className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm">
-                        {item.date}
-                      </div>
-                      <div>{item.event}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <EventScheduleCard schedule={hackathon.schedule} />
             </div>
 
             {/* Right Column */}
@@ -342,7 +252,12 @@ export default function HackathonPage() {
               </div>
 
               {/* Register Button */}
-              <button className="w-full bg-yellow-400 text-black px-6 py-4 rounded-md hover:bg-yellow-500 transition duration-300 font-bold text-lg">
+              <button
+                className="w-full fixed bottom-0 left-0 z-20 md:relative bg-green-400 text-black px-6 py-4 rounded-md hover:bg-green-500 transition duration-300 font-bold text-lg"
+                onClick={() => {
+                  router.push(hackathon.registerLink);
+                }}
+              >
                 Register Now
               </button>
             </div>
@@ -357,6 +272,8 @@ export default function HackathonPage() {
 const mockHackathon: Hackathon = {
   id: "1",
   title: "AI Innovation Hackathon 2024",
+  summary:
+    "Join us for an exciting 48-hour hackathon focused on building innovative AI solutions. Work with cutting-edge technologies, learn from industry experts, and compete for amazing prizes!",
   description:
     "Join us for an exciting 48-hour hackathon focused on building innovative AI solutions. Work with cutting-edge technologies, learn from industry experts, and compete for amazing prizes!",
   prizePool: "$20,000",
@@ -419,6 +336,7 @@ const mockHackathon: Hackathon = {
     discord: "discord.gg/techcorp-hack",
     website: "https://example.com/hackathon",
   },
+  registerLink: "https://example.com/register",
 };
 
 const featuredAd: AdPlacement = {
