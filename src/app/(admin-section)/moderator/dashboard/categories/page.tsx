@@ -22,13 +22,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
 interface Category {
   id: number;
   name: string;
   description: string;
   is_active: boolean;
 }
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);

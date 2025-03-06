@@ -16,6 +16,7 @@ interface Category {
 const ModeratorDashboardPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const supabase = createClient();
+  console.log(categories);
 
   useEffect(() => {
     fetchCategories();

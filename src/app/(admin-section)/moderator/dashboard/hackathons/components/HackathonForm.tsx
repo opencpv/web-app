@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 interface Category {
   id: number;
   name: string;
@@ -147,19 +147,6 @@ const HackathonForm = ({
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
-
-  const handleArrayInput = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-    field: string
-  ) => {
-    const values = e.target.value
-      .split("\n")
-      .filter((item) => item.trim() !== "");
-    setFormData((prev) => ({
-      ...prev,
-      [field]: values,
     }));
   };
 
@@ -658,7 +645,10 @@ const HackathonForm = ({
       <div>
         <label className="block mb-2">Schedule</label>
         {formData.schedule.map((item, index) => (
-          <div className="w-full flex flex-row gap-4 items-center mb-4">
+          <div
+            className="w-full flex flex-row gap-4 items-center mb-4"
+            key={index}
+          >
             <div className="w-[calc(100%-40px)]">
               <div key={index} className="w-full grid grid-cols-2 gap-4">
                 <Input

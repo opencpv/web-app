@@ -16,7 +16,7 @@ import { onboardingSchema } from "@/lib/validation-schemas";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const OnboardingPage = () => {
   const countryList = useMemo(() => countries, []);
   const supabase = createClient();
@@ -38,7 +38,7 @@ const OnboardingPage = () => {
         phone,
       });
 
-      const { data, error } = await supabase.from("user_profile").insert({
+      const { error } = await supabase.from("user_profile").insert({
         user_id: userId,
         ...profileData,
         role: "moderator",

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { createClient } from "@/lib/supabase/client";
 import toast from "react-hot-toast";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export default function CreateCategoryDialog() {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +30,7 @@ export default function CreateCategoryDialog() {
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("categories")
         .insert([{ name: name.trim(), description: description.trim() }])
         .select();

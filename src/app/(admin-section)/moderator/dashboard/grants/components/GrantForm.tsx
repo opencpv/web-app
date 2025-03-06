@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface Category {
   id: number;
@@ -107,19 +108,6 @@ const GrantForm = ({ grantId, isEditing = false }: GrantFormProps) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
-
-  const handleArrayInput = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-    field: string
-  ) => {
-    const values = e.target.value
-      .split("\n")
-      .filter((item) => item.trim() !== "");
-    setFormData((prev) => ({
-      ...prev,
-      [field]: values,
     }));
   };
 
@@ -324,8 +312,8 @@ const GrantForm = ({ grantId, isEditing = false }: GrantFormProps) => {
             required
           >
             <option value="">Select Category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
+            {categories.map((category, index) => (
+              <option key={index} value={category.id}>
                 {category.name}
               </option>
             ))}
@@ -509,7 +497,10 @@ const GrantForm = ({ grantId, isEditing = false }: GrantFormProps) => {
       <div>
         <label className="block mb-2">Timeline</label>
         {formData.timeline.map((item, index) => (
-          <div className="w-full flex flex-row gap-4 items-center mb-4">
+          <div
+            className="w-full flex flex-row gap-4 items-center mb-4"
+            key={index}
+          >
             <div className="w-[calc(100%-40px)]">
               <div className="w-full grid grid-cols-2 gap-4">
                 <Input

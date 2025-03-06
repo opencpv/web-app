@@ -45,7 +45,7 @@ const Navbar: React.FC = () => {
               <Link
                 key={index}
                 href={link.href}
-                className="text-black font-semibold bg-yellow-400 hover:bg-yellow-500 px-4 py-2 rounded-md transition-all duration-200"
+                className="text-black  bg-yellow-400 hover:bg-yellow-500 px-4 py-2 rounded-md transition-all duration-200"
               >
                 {link.name}
               </Link>

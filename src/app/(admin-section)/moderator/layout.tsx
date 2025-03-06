@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 export default function ModeratorLayout({
   children,
@@ -8,7 +9,7 @@ export default function ModeratorLayout({
   return (
     <>
       <Toaster />
-      {children}
+      <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
     </>
   );
 }

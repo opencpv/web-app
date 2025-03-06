@@ -1,5 +1,4 @@
 "use client";
-
 import { greatVibes } from "@/app/fonts/font";
 import Button from "@/components/ui/button/Button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { signInSchema } from "@/lib/validation-schemas";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const ModeratorPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
