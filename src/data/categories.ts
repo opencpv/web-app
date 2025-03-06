@@ -4,6 +4,7 @@ const categories = [
     title: "Hackathons",
     description:
       "Join exciting coding competitions and build innovative solutions",
+    link: "/hackathons",
   },
   {
     icon: "💰",

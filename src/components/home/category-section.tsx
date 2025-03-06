@@ -16,6 +16,7 @@ const CategorySection = () => {
             icon={category.icon}
             title={category.title}
             description={category.description}
+            link={category.link}
           />
         ))}
       </div>

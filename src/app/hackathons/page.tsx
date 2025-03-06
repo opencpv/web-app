@@ -109,7 +109,7 @@ export default function HackathonsPage() {
         </div>
 
         {/* Featured Ad Banner */}
-        <AdBannerCard featuredAd={featuredAd} />
+        {/* <AdBannerCard featuredAd={featuredAd} /> */}
 
         {/* Hackathons List */}
         <div
@@ -124,7 +124,7 @@ export default function HackathonsPage() {
               <HackathonCard hackathon={hackathon} viewMode={viewMode} />
 
               {/* Insert ad after every 5 hackathons */}
-              {(index + 1) % 5 === 0 && (
+              {/* {(index + 1) % 5 === 0 && (
                 <div
                   className={`${
                     viewMode === "list"
@@ -184,7 +184,7 @@ export default function HackathonsPage() {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           ))}
         </div>
@@ -270,40 +270,40 @@ const mockHackathons: Hackathon[] = [
   // Add more mock hackathons...
 ];
 
-const featuredAd: AdPlacement = {
-  id: "featured-1",
-  title: "Level Up Your Hackathon Game with HackPro",
-  description:
-    "Get access to premium hackathon resources, team matching, and mentorship. Special offer: First month free!",
-  image: "https://picsum.photos/seed/featured-hack-ad/800/600",
-  link: "https://example.com/hackpro-offer",
-  sponsor: "HackPro",
-};
+// const featuredAd: AdPlacement = {
+//   id: "featured-1",
+//   title: "Level Up Your Hackathon Game with HackPro",
+//   description:
+//     "Get access to premium hackathon resources, team matching, and mentorship. Special offer: First month free!",
+//   image: "https://picsum.photos/seed/featured-hack-ad/800/600",
+//   link: "https://example.com/hackpro-offer",
+//   sponsor: "HackPro",
+// };
 
-const inlineAds: AdPlacement[] = [
-  {
-    id: "inline-1",
-    title: "Hackathon Starter Kit",
-    description:
-      "Get everything you need to succeed in your next hackathon. Templates, tools, and resources included.",
-    image: "https://picsum.photos/seed/hack-ad1/800/600",
-    link: "https://example.com/starter-kit",
-    sponsor: "HackTools",
-  },
-  {
-    id: "inline-2",
-    title: "Cloud Credits for Hackers",
-    description: "Special cloud computing credits for hackathon participants.",
-    image: "https://picsum.photos/seed/hack-ad2/800/600",
-    link: "https://example.com/cloud-credits",
-    sponsor: "CloudTech",
-  },
-  {
-    id: "inline-3",
-    title: "Hackathon Workshop Series",
-    description: "Learn from past winners and level up your hackathon skills.",
-    image: "https://picsum.photos/seed/hack-ad3/800/600",
-    link: "https://example.com/workshops",
-    sponsor: "HackLearn",
-  },
-];
+// const inlineAds: AdPlacement[] = [
+//   {
+//     id: "inline-1",
+//     title: "Hackathon Starter Kit",
+//     description:
+//       "Get everything you need to succeed in your next hackathon. Templates, tools, and resources included.",
+//     image: "https://picsum.photos/seed/hack-ad1/800/600",
+//     link: "https://example.com/starter-kit",
+//     sponsor: "HackTools",
+//   },
+//   {
+//     id: "inline-2",
+//     title: "Cloud Credits for Hackers",
+//     description: "Special cloud computing credits for hackathon participants.",
+//     image: "https://picsum.photos/seed/hack-ad2/800/600",
+//     link: "https://example.com/cloud-credits",
+//     sponsor: "CloudTech",
+//   },
+//   {
+//     id: "inline-3",
+//     title: "Hackathon Workshop Series",
+//     description: "Learn from past winners and level up your hackathon skills.",
+//     image: "https://picsum.photos/seed/hack-ad3/800/600",
+//     link: "https://example.com/workshops",
+//     sponsor: "HackLearn",
+//   },
+// ];

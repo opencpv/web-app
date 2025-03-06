@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AdBannerCard from "@/components/cards/ad-banner-card";
 import EventScheduleCard from "@/components/cards/EventSchedule";
+import ButtonComponent from "@/components/ui/button/Button";
 
 export default function HackathonPage() {
   // In a real app, you would fetch the hackathon data using the ID
@@ -49,7 +50,7 @@ export default function HackathonPage() {
         </div>
       </section>
       {/* Featured Ad Banner - Below Hero */}
-      <AdBannerCard featuredAd={featuredAd} />
+      {/* <AdBannerCard featuredAd={featuredAd} /> */}
 
       {/* Main Content */}
       <section className="py-12">
@@ -101,7 +102,7 @@ export default function HackathonPage() {
               </div>
 
               {/* Inline Ad */}
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              {/* <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="flex flex-col sm:flex-row items-center">
                   <div className="w-full sm:w-1/3 h-48">
                     <img
@@ -135,7 +136,7 @@ export default function HackathonPage() {
                     </a>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* Schedule */}
               <EventScheduleCard schedule={hackathon.schedule} />
@@ -173,7 +174,7 @@ export default function HackathonPage() {
               </div>
 
               {/* Sidebar Ad */}
-              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              {/* <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="relative">
                   <img
                     src={sidebarAd.image}
@@ -201,7 +202,7 @@ export default function HackathonPage() {
                     Learn More
                   </a>
                 </div>
-              </div>
+              </div> */}
 
               {/* Resources */}
               <div className="bg-white rounded-lg shadow-md p-6">
@@ -252,14 +253,14 @@ export default function HackathonPage() {
               </div>
 
               {/* Register Button */}
-              <button
-                className="w-full fixed bottom-0 left-0 z-20 md:relative bg-green-400 text-black px-6 py-4 rounded-md hover:bg-green-500 transition duration-300 font-bold text-lg"
+              <ButtonComponent
+                text="Register Now"
+                width="full"
+                height="lg"
                 onClick={() => {
-                  router.push(hackathon.registerLink);
+                  router.push(hackathon.contactInfo.website);
                 }}
-              >
-                Register Now
-              </button>
+              />
             </div>
           </div>
         </div>
@@ -339,30 +340,30 @@ const mockHackathon: Hackathon = {
   registerLink: "https://example.com/register",
 };
 
-const featuredAd: AdPlacement = {
-  id: "featured-1",
-  title: "Level Up Your Hackathon Game with HackPro",
-  description:
-    "Get access to premium hackathon resources, team matching, and mentorship. Special offer: First month free!",
-  image: "https://picsum.photos/seed/featured-hack-ad/800/600",
-  link: "https://example.com/hackpro-offer",
-  sponsor: "HackPro",
-};
+// const featuredAd: AdPlacement = {
+//   id: "featured-1",
+//   title: "Level Up Your Hackathon Game with HackPro",
+//   description:
+//     "Get access to premium hackathon resources, team matching, and mentorship. Special offer: First month free!",
+//   image: "https://picsum.photos/seed/featured-hack-ad/800/600",
+//   link: "https://example.com/hackpro-offer",
+//   sponsor: "HackPro",
+// };
 
-const inlineAd1: AdPlacement = {
-  id: "inline-1",
-  title: "Cloud Credits for Hackers",
-  description: "Get $5000 in cloud credits for your hackathon project!",
-  image: "https://picsum.photos/seed/inline-hack-ad/800/600",
-  link: "https://example.com/cloud-credits",
-  sponsor: "CloudTech",
-};
+// const inlineAd1: AdPlacement = {
+//   id: "inline-1",
+//   title: "Cloud Credits for Hackers",
+//   description: "Get $5000 in cloud credits for your hackathon project!",
+//   image: "https://picsum.photos/seed/inline-hack-ad/800/600",
+//   link: "https://example.com/cloud-credits",
+//   sponsor: "CloudTech",
+// };
 
-const sidebarAd: AdPlacement = {
-  id: "sidebar-1",
-  title: "Dev Tools Bundle",
-  description: "Essential tools and resources for hackathon success",
-  image: "https://picsum.photos/seed/sidebar-hack-ad/800/600",
-  link: "https://example.com/dev-tools",
-  sponsor: "DevPro",
-};
+// const sidebarAd: AdPlacement = {
+//   id: "sidebar-1",
+//   title: "Dev Tools Bundle",
+//   description: "Essential tools and resources for hackathon success",
+//   image: "https://picsum.photos/seed/sidebar-hack-ad/800/600",
+//   link: "https://example.com/dev-tools",
+//   sponsor: "DevPro",
+// };

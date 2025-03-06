@@ -1,11 +1,13 @@
 import { Hackathon } from "@/lib/types";
 import ButtonComponent from "../ui/button/Button";
+import { useRouter } from "next/navigation";
 
 interface HackathonCardProps {
   hackathon: Hackathon;
   viewMode: "grid" | "list";
 }
 const HackathonCard = ({ hackathon, viewMode }: HackathonCardProps) => {
+  const router = useRouter();
   return (
     <div
       key={hackathon.id}
@@ -57,7 +59,12 @@ const HackathonCard = ({ hackathon, viewMode }: HackathonCardProps) => {
           </div>
           <ButtonComponent
             text="View Details"
-            onClick={() => {}}
+            width="full"
+            onClick={() => {
+              router.push(
+                `/hackathons/${hackathon.id}?title=${hackathon.title}`
+              );
+            }}
             variant="solid"
           />
         </div>
