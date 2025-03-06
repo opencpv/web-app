@@ -4,7 +4,7 @@ import { greatVibes } from "@/app/fonts/font";
 import { SectionHeading } from "@/components/ui/title-text/section-heading";
 import { Spacer } from "@/components/ui/spacer";
 import categories from "@/data/categories";
-import CategoryCard from "@/components/cards/category-card";
+import CategoryCard from "@/components/cards/link-page-card";
 import mixpanel from "@/lib/mixpanel";
 import { trackEvent } from "@/lib/analytics";
 

@@ -1,11 +1,12 @@
 interface ButtonProps {
   text: string;
-  color?: "primary" | "secondary" | "tertiary" | "white";
+  color?: "primary" | "secondary" | "tertiary" | "white" | "red";
   width?: "sm" | "md" | "lg" | "full";
   height?: "sm" | "md" | "lg" | "full";
   variant?: "outline" | "solid" | "ghost";
   onClick?: () => void;
 }
+
 export default function ButtonComponent({
   text,
   color = "primary",
@@ -22,6 +23,7 @@ export default function ButtonComponent({
       : width === "lg"
       ? "px-12"
       : "w-full";
+
   const heightClass =
     height === "sm"
       ? "py-1"
@@ -30,14 +32,17 @@ export default function ButtonComponent({
       : height === "lg"
       ? "py-5"
       : "h-full";
+
   const colorClass =
     color === "primary"
       ? "yellow"
       : color === "secondary"
       ? "blue"
+      : color === "tertiary"
+      ? "green"
       : color === "white"
       ? "white"
-      : "green";
+      : "red";
 
   const variantClass =
     variant === "outline"
@@ -48,7 +53,7 @@ export default function ButtonComponent({
         }`
       : variant === "solid"
       ? `bg-${colorClass}-400 text-${
-          color === "primary" ? "black" : color === "white" ? "black" : "white"
+          color === "primary" || color === "white" ? "black" : "white"
         } hover:bg-${colorClass}-500`
       : `text-${
           colorClass === "white" ? "white" : `${colorClass}-400`
@@ -59,7 +64,7 @@ export default function ButtonComponent({
   return (
     <button
       onClick={onClick}
-      className={`${sizeClass} ${heightClass} ${variantClass} rounded-md transition duration-300`}
+      className={`${sizeClass} ${heightClass} ${variantClass} rounded-md transition duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${colorClass}-400`}
     >
       {text}
     </button>

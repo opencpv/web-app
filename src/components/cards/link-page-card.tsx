@@ -1,18 +1,20 @@
 import Link from "next/link";
 
-interface CategoryCardProps {
+interface LinkPageCardProps {
   icon: string;
   title: string;
   description: string;
   clickable?: boolean;
+  link?: string;
 }
 
-const CategoryCard = ({
+const LinkPageCard = ({
   icon,
   title,
   description,
   clickable = true,
-}: CategoryCardProps) => {
+  link,
+}: LinkPageCardProps) => {
   const commonClasses =
     "block bg-white p-6 rounded-lg shadow-md text-left border-2 border-transparent hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:bg-yellow-50 hover:border-yellow-400";
   const clickableClasses = "group";
@@ -38,13 +40,10 @@ const CategoryCard = ({
   }
 
   return (
-    <Link
-      href={`/categories/${title.toLowerCase()}`}
-      className={`${commonClasses} ${clickableClasses}`}
-    >
+    <Link href={link || ``} className={`${commonClasses} ${clickableClasses}`}>
       {content}
     </Link>
   );
 };
 
-export default CategoryCard;
+export default LinkPageCard;

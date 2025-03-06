@@ -8,6 +8,8 @@ const Footer = () => {
   const { svgs } = useAssets();
   const pathname = usePathname();
   const isWaitlistPage = pathname.startsWith("/landing");
+  const isAdminPage = pathname.startsWith("/admin");
+  const isModeratorPage = pathname.startsWith("/moderator");
 
   const footerLinks = {
     opportunities: [
@@ -38,7 +40,7 @@ const Footer = () => {
     ],
   };
 
-  if (isWaitlistPage) {
+  if (isWaitlistPage || isAdminPage || isModeratorPage) {
     return null;
   } else {
     return (

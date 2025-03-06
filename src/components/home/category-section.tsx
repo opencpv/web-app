@@ -1,6 +1,6 @@
 "use client";
 import categories from "@/data/categories";
-import CategoryCard from "../cards/category-card";
+import CategoryCard from "../cards/link-page-card";
 import { SectionHeading } from "../ui/title-text/section-heading";
 import { Spacer } from "../ui/spacer";
 

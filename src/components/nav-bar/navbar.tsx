@@ -19,7 +19,9 @@ const Navbar: React.FC = () => {
     { name: "Fellowships", href: "/fellowships" },
   ];
   const isWaitlistPage = pathname.startsWith("/landing");
-  if (isWaitlistPage) {
+  const isAdminPage = pathname.startsWith("/admin");
+  const isModeratorPage = pathname.startsWith("/moderator");
+  if (isWaitlistPage || isAdminPage || isModeratorPage) {
     return null;
   }
   return (

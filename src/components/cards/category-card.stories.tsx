@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import CategoryCard from "./category-card";
+import CategoryCard from "./link-page-card";
 
 const meta: Meta<typeof CategoryCard> = {
   title: "Cards/CategoryCard",
